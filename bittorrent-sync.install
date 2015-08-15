@@ -1,0 +1,30 @@
+post_install() {
+    if [ "$(grep btsync /etc/passwd)" == "" ]; then
+        useradd -M -r -U -s /bin/sh -d /var/lib/btsync btsync
+    fi
+    mkdir -p /var/lib/btsync && chown -R btsync:btsync /var/lib/btsync
+
+cat << EOF
+
+  This package is now DEPRECATED in favor of the btsync-autoconfig package. The
+  functionality provided by this package has been split into two halves:
+
+  - Package 'btsync' provides the btsync executable and systemd services
+  - Package 'btsync-autoconfig' provides the config auto-creator scripts
+
+  Please install the btsync and btsync-autoconfig packages instead.
+
+EOF
+
+}
+
+post_upgrade() {
+    post_install
+}
+
+post_remove() {
+  userdel btsync
+  echo -e "Please remove the /var/lib/btsync folder manually."
+}
+
+# vim: ts=4:sw=4:et
